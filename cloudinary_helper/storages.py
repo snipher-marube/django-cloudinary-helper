@@ -17,6 +17,14 @@ class CloudinaryMediaStorage(Storage):
     def url(self, name):
         return CloudinaryImage(name).build_url()
 
+    def exists(self, name):
+        """Check if a file exists in Cloudinary."""
+        try:
+            CloudinaryImage(name).build_url()  # This will raise an error if the file doesn't exist.
+            return True
+        except Exception:
+            return False
+
 
 class CloudinaryStaticStorage(Storage):
     """Custom storage for Cloudinary Static Files."""
@@ -27,6 +35,14 @@ class CloudinaryStaticStorage(Storage):
 
     def url(self, name):
         return CloudinaryImage(name).build_url()
+
+    def exists(self, name):
+        """Check if a file exists in Cloudinary."""
+        try:
+            CloudinaryImage(name).build_url()
+            return True
+        except Exception:
+            return False
 
 
 def is_production():
