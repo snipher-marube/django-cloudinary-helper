@@ -53,10 +53,11 @@ pip install django-cloudinary-helper
 4. Add storage configurations for static and media files:
     To ensure your static and media files are served via Cloudinary in production, add the following settings to your `settings.py`:
     
-        ```python
-            DEFAULT_FILE_STORAGE = 'cloudinary_helper.storages.MediaStorage'
-            STATICFILES_STORAGE = 'cloudinary_helper.storages.StaticStorage'
-        ```
+    ```python
+    DEFAULT_FILE_STORAGE = 'cloudinary_helper.storages.MediaStorage'
+    STATICFILES_STORAGE = 'cloudinary_helper.storages.StaticStorage'
+    ```
+    
 
 5. (Optional) Using the storage in your app:
     With the above configurations, your `FileField` and `ImageField` fields in Django models will automatically use Cloudinary for file uploads in production. In development, when `DEBUG = True`, local file storage will be used instead.
