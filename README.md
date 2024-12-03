@@ -64,11 +64,14 @@ pip install django-cloudinary-helper
 
     ### Example Model:
     ```python
+    from cloudinary.models import CloudinaryField
     from django.db import models
+    from django.conf import settings
 
     class MyModel(models.Model):
-        image = models.ImageField(upload_to='images/')
-        file = models.FileField(upload_to='files/')
+        image = CloudinaryField('image') if not settings.DEBUG else models.ImageField(upload_to='local/')
+        file = CloudinaryField('file') if not settings.DEBUG else models.FileField(upload_to='local/')
+
     ```
 
 6. (Optional) Handling Static Files:
