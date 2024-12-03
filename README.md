@@ -70,10 +70,12 @@ This means you don't need to manually adjust your models. Simply use the default
 
 ```python
 from django.db import models
+from cloudinary_helper.storages import CloudinaryMediaStorage
 
-class MyModel(models.Model):
-    image = models.ImageField(upload_to='images/')
-    file = models.FileField(upload_to='files/')
+class YourModel(models.Model):
+    image = models.ImageField(upload_to='images/', storage=CloudinaryMediaStorage())
+    file = models.FileField(upload_to='files/', storage=CloudinaryMediaStorage())
+
 ```
 
 
