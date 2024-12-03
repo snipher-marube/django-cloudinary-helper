@@ -28,62 +28,41 @@ pip install django-cloudinary-helper
         ...
     ]
 ```
-2. Add Cloudinary configuration to your `settings.py`:
-   You will need to configure Cloudinary by adding the following settings to your `settings.py`:
 
-   ```python
-      CLOUDINARY_STORAGE = {
-        'CLOUD_NAME': 'your_cloud_name',
-        'API_KEY': 'your_api_key',
-        'API_SECRET': 'your_api_secret',
-        'SECURE': True,
-        }
-    ```
 
-3. Optional: Call `setup_cloudinary()` in `settings.py`:
-    To configure Cloudinary in your Django app, you can call the `setup_cloudinary()` function. This is optional, but it helps simplify the configuration by setting the appropriate storage for both static and media files:
-
-    ```python
-    from cloudinary_helper.utils import setup_cloudinary
-
-    # Set up Cloudinary storage with your Cloudinary credentials
-    setup_cloudinary('your_cloud_name', 'your_api_key', 'your_api_secret')
-    ```
-
-4. Add storage configurations for static and media files:
+2. Add storage configurations for static and media files:
     To ensure your static and media files are served via Cloudinary in production, add the following settings to your `settings.py`:
     
     ```python
-    # Static files (CSS, JavaScript, Images)
-    # https://docs.djangoproject.com/en/5.0/howto/static-files/
-
-    # Static and media configurations
+    from decouple import config 
+    from cloudinary_helper.utils import setup_cloudinary
     if DEBUG:
         # Development
         STATIC_URL = '/static/'
         STATICFILES_DIRS = [BASE_DIR / 'static']
-        STATIC_ROOT = BASE_DIR / 'staticfiles' # This is where collectstatic    will store static files
+        STATIC_ROOT = BASE_DIR / 'staticfiles' # This is where collectstatic will store static files
         MEDIA_URL = '/media/'
-        MEDIA_ROOT = BASE_DIR / 'static/media' # This is where media files will     be stored
+        MEDIA_ROOT = BASE_DIR / 'static/media' # This is where media files will be stored
         DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
-        STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.  StaticFilesStorage'
+        STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
     else:
         # Production
         STATIC_URL = '/static/'
         MEDIA_URL = '/media/'
-        # Cloudinary settings
-        cloudinary.config(
-            cloud_name=config('CLOUDINARY_CLOUD_NAME'),
-            api_key=config('CLOUDINARY_API_KEY'),
-            api_secret=config('CLOUDINARY_API_SECRET')
+        setup_cloudinary(
+            config('CLOUDINARY_CLOUD_NAME'),
+            config('CLOUDINARY_API_KEY'),
+            config('CLOUDINARY_API_SECRET')
         )
-        DEFAULT_FILE_STORAGE = 'cloudinary_helper.storages. CloudinaryMediaStorage'
-        STATICFILES_STORAGE = 'cloudinary_helper.storages.  CloudinaryStaticStorage'
+     
+
+        DEFAULT_FILE_STORAGE = 'cloudinary_helper.storages.CloudinaryMediaStorage'
+        STATICFILES_STORAGE = 'cloudinary_helper.storages.CloudinaryStaticStorage'
 
     ```
     
 
-5. (Optional) Using the storage in your app:
+3. (Optional) Using the storage in your app:
     With the above configurations, your `FileField` and `ImageField` fields in Django models will automatically use Cloudinary for file uploads in production. In development, when `DEBUG = True`, local file storage will be used instead.
 
 ### Automatic Field Swapping
@@ -94,11 +73,11 @@ This means you don't need to manually adjust your models. Simply use the default
 
 ```python
 from django.db import models
-from cloudinary_helper.storages import CloudinaryMediaStorage
+from cloudinary_helper.storages import get_storage_class
 
 class YourModel(models.Model):
-    image = models.ImageField(upload_to='images/', storage=CloudinaryMediaStorage())
-    file = models.FileField(upload_to='files/', storage=CloudinaryMediaStorage())
+    image = models.ImageField(storage=get_storage_class(), upload_to='images/')
+    file = models.FileField(storage=get_storage_class(), upload_to='files/')
 
 ```
 
@@ -120,7 +99,7 @@ This implementation makes your package more developer-friendly by abstracting aw
 
 
 
-6. (Optional) Handling Static Files:
+4. (Optional) Handling Static Files:
     In production, Cloudinary will automatically serve your static files. In development, the `StaticStorage` class will fall back to the local file system. No additional configuration is required for static files other than the `STATICFILES_STORAGE`
 
 ## Notes
