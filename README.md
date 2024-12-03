@@ -54,8 +54,32 @@ pip install django-cloudinary-helper
     To ensure your static and media files are served via Cloudinary in production, add the following settings to your `settings.py`:
     
     ```python
-    DEFAULT_FILE_STORAGE = 'cloudinary_helper.storages.MediaStorage'
-    STATICFILES_STORAGE = 'cloudinary_helper.storages.StaticStorage'
+    # Static files (CSS, JavaScript, Images)
+    # https://docs.djangoproject.com/en/5.0/howto/static-files/
+
+    # Static and media configurations
+    if DEBUG:
+        # Development
+        STATIC_URL = '/static/'
+        STATICFILES_DIRS = [BASE_DIR / 'static']
+        STATIC_ROOT = BASE_DIR / 'staticfiles' # This is where collectstatic    will store static files
+        MEDIA_URL = '/media/'
+        MEDIA_ROOT = BASE_DIR / 'static/media' # This is where media files will     be stored
+        DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+        STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.  StaticFilesStorage'
+    else:
+        # Production
+        STATIC_URL = '/static/'
+        MEDIA_URL = '/media/'
+        # Cloudinary settings
+        cloudinary.config(
+            cloud_name=config('CLOUDINARY_CLOUD_NAME'),
+            api_key=config('CLOUDINARY_API_KEY'),
+            api_secret=config('CLOUDINARY_API_SECRET')
+        )
+        DEFAULT_FILE_STORAGE = 'cloudinary_helper.storages. CloudinaryMediaStorage'
+        STATICFILES_STORAGE = 'cloudinary_helper.storages.  CloudinaryStaticStorage'
+
     ```
     
 
