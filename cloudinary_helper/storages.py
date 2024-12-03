@@ -39,10 +39,13 @@ class StaticStorage(FileSystemStorage):
             location = None  # Cloudinary will handle location when not in DEBUG mode
         super().__init__(location=location, *args, **kwargs)
 
-    def __new__(cls):
+    def __new__(cls, *args, **kwargs):
         if settings.DEBUG:
-            return StaticStorage()
-        return CloudinaryStaticStorage()
+            # For DEBUG, create the normal static storage
+            return super().__new__(cls, *args, **kwargs)
+        else:
+            # For non-DEBUG, create Cloudinary static storage
+            return CloudinaryStaticStorage(*args, **kwargs)
 
 
 class MediaStorage(FileSystemStorage):
@@ -54,7 +57,10 @@ class MediaStorage(FileSystemStorage):
             location = None  # Cloudinary will handle location when not in DEBUG mode
         super().__init__(location=location, *args, **kwargs)
 
-    def __new__(cls):
+    def __new__(cls, *args, **kwargs):
         if settings.DEBUG:
-            return MediaStorage()
-        return CloudinaryMediaStorage()
+            # For DEBUG, create the normal media storage
+            return super().__new__(cls, *args, **kwargs)
+        else:
+            # For non-DEBUG, create Cloudinary media storage
+            return CloudinaryMediaStorage(*args, **kwargs)
