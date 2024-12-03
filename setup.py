@@ -11,7 +11,7 @@ except FileNotFoundError:
 
 setup(
     name="django-cloudinary-helper",
-    version="0.2.9",
+    version="0.3.0",
     author="Snipher Marube",
     author_email="sniphermarube@gmail.com",
     description="Helper package for integrating Cloudinary with Django projects.",
@@ -23,7 +23,8 @@ setup(
     install_requires=[
         "django>=3.0",
         "django-storages",
-        "cloudinary"
+        "cloudinary",
+        "python-decouple",
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
