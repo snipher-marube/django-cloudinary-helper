@@ -12,9 +12,9 @@ def setup_cloudinary(cloud_name, api_key, api_secret):
     }
     settings.DEFAULT_FILE_STORAGE = 'cloudinary_helper.storages.MediaStorage'
     settings.STATICFILES_STORAGE = 'cloudinary_helper.storages.StaticStorage'
-
-    if not settings.DEBUG:
-        replace_fields_with_cloudinary()
+    settings.CLOUDINARY_URL_CONFIG = {
+        'secure': True
+    }
 
 
 def replace_fields_with_cloudinary():
