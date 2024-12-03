@@ -5,6 +5,7 @@ import cloudinary.uploader
 from django.core.files.storage import Storage
 from cloudinary import CloudinaryImage
 
+
 class CloudinaryMediaStorage(Storage):
     """Custom storage for Cloudinary Media Files."""
     def _save(self, name, content):
@@ -15,6 +16,7 @@ class CloudinaryMediaStorage(Storage):
     def url(self, name):
         # Generate the URL for the stored file
         return CloudinaryImage(name).build_url()
+
 
 class CloudinaryStaticStorage(Storage):
     """Custom storage for Cloudinary Static Files."""
@@ -27,14 +29,32 @@ class CloudinaryStaticStorage(Storage):
         # Generate the URL for the static file
         return CloudinaryImage(name).build_url()
 
-class StaticStorage:
+
+class StaticStorage(FileSystemStorage):
+    """Custom Static Storage class that switches based on DEBUG setting."""
+    def __init__(self, *args, **kwargs):
+        if settings.DEBUG:
+            location = settings.STATICFILES_DIRS[0]  # Location from settings when in DEBUG mode
+        else:
+            location = None  # Cloudinary will handle location when not in DEBUG mode
+        super().__init__(location=location, *args, **kwargs)
+
     def __new__(cls):
         if settings.DEBUG:
-            return FileSystemStorage(location=settings.STATICFILES_DIRS[0])
+            return StaticStorage()
         return CloudinaryStaticStorage()
 
-class MediaStorage:
+
+class MediaStorage(FileSystemStorage):
+    """Custom Media Storage class that switches based on DEBUG setting."""
+    def __init__(self, *args, **kwargs):
+        if settings.DEBUG:
+            location = settings.MEDIA_ROOT  # Location from settings when in DEBUG mode
+        else:
+            location = None  # Cloudinary will handle location when not in DEBUG mode
+        super().__init__(location=location, *args, **kwargs)
+
     def __new__(cls):
         if settings.DEBUG:
-            return FileSystemStorage(location=settings.MEDIA_ROOT)
+            return MediaStorage()
         return CloudinaryMediaStorage()

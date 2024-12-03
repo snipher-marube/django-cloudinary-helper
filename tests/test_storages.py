@@ -26,7 +26,7 @@ class TestStorages(unittest.TestCase):
         settings.DEBUG = True
         storage = StaticStorage()
         self.assertEqual(storage.__class__.__name__, "FileSystemStorage")
-        self.assertEqual(storage.location, "/mock/static/")
+        self.assertEqual(storage.location, "/mock/static/")  # Add the trailing slash
 
     def test_production_static_storage(self):
         settings.DEBUG = False
@@ -37,8 +37,8 @@ class TestStorages(unittest.TestCase):
         settings.DEBUG = True
         storage = MediaStorage()
         self.assertEqual(storage.__class__.__name__, "FileSystemStorage")
-        self.assertEqual(storage.location, "/mock/media/")
-
+        self.assertEqual(storage.location, "/mock/media/")  # Add the trailing slash
+    
     def test_production_media_storage(self):
         settings.DEBUG = False
         storage = MediaStorage()
