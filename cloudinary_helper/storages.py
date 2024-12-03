@@ -4,12 +4,15 @@ import cloudinary
 import cloudinary.uploader
 from django.core.files.storage import Storage
 from cloudinary import CloudinaryImage
+import os
+
 
 
 class CloudinaryMediaStorage(Storage):
     """Custom storage for Cloudinary Media Files."""
     def _save(self, name, content):
-        # Upload the file to Cloudinary
+        # Ensure the name is valid for Cloudinary public ID
+        name = os.path.basename(name)
         response = cloudinary.uploader.upload(content, public_id=name)
         return response['public_id']
 
@@ -21,7 +24,8 @@ class CloudinaryMediaStorage(Storage):
 class CloudinaryStaticStorage(Storage):
     """Custom storage for Cloudinary Static Files."""
     def _save(self, name, content):
-        # Upload the static file to Cloudinary
+        # Ensure the name is valid for Cloudinary public ID
+        name = os.path.basename(name)
         response = cloudinary.uploader.upload(content, public_id=name, resource_type="raw")
         return response['public_id']
 
