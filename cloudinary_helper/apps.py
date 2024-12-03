@@ -1,6 +1,5 @@
 from django.apps import AppConfig
 from django.conf import settings
-from cloudinary.uploader import config
 from .utils import setup_cloudinary 
 
 
