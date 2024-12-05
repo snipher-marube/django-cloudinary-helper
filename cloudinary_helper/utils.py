@@ -1,3 +1,4 @@
+import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 from django.conf import settings
@@ -53,4 +54,3 @@ def get_image_responsive_sizes():
 
 def get_image_responsive_image(public_id, width, height):
     return f'<img src="{get_image_responsive_url(public_id, width, height)}" srcset="{get_image_responsive_srcset(public_id, width, height)}" sizes="{get_image_responsive_sizes()}" alt="{public_id}">'
-

@@ -25,6 +25,7 @@ setup(
         "django-storages",
         "cloudinary",
         "python-decouple",
+        "pillow",
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
